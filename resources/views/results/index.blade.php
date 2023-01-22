@@ -9,7 +9,7 @@
   <body>
     <div class="px-4 py-5 my-5 text-center">
 
-        <h1 class="display-5 fw-bold">BinCom</h1>
+        <h1 class="display-5 fw-bold">Polling Units</h1>
         <div class="container">
             <div class="card">
                 <div class="card-body">

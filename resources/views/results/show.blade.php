@@ -16,17 +16,16 @@
                     <div class="card">
                         <div class="card-body">
 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            {{-- @if (count($party_scores) == 0) --}}
-                                <h1 class="alert alert-danger">No Scores found yet.</h1>
-                            {{-- @else --}}
+                                <h1 class="alert alert-info">Insert Party Score</h1>
 
 
+                                                        @if (session('status'))
+
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>  {{ session('status') }}!</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                  </div>
+                            @endif
 
                             <table class="table table-striped" >
                                 <thead>
@@ -38,8 +37,7 @@
 
                                     <th scope="col">Party Abbreviation</th>
                                     <th scope="col">Party Score</th>
-                                    {{-- <th scope="col">Polling Unit name</th>
-                                    <th scope="col">Description</th> --}}
+
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -49,18 +47,18 @@
                                         <tr>
                                             <td><input type="text"  name="partyname[]" value="{{$party->partyname}}" readonly></td>
                                             <td><input type="number" required name="score[]"></td>
-                                            <td><input type="hidden" required name="polling_unit_uniqueid[]" value = "{{$id}}"></td>
+                                            <td><input type="hidden"  name="polling_unit_uniqueid[]" value = "{{$id}}"></td>
                                         </tr>
                                         @endforeach
 
 
 
                                 </tbody>
-                                {{-- @endif --}}
+
                               </table>
                               <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
-                              <a href="{{route('lga')}}" class="btn btn-danger">Back</a>
+                              <a href="{{route('results.index')}}" class="btn btn-danger">Back</a>
                         </div>
                       </div>
                   </div>

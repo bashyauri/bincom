@@ -14,13 +14,12 @@ class ResultController extends Controller
      */
     public function index()
     {
+        // fetch all polling units yet to assign scores to
         $all_polling_units = DB::table('polling_unit')
-
         ->whereNotExists(function ($query) {
             $query->select(DB::raw('*'))
                   ->from('announced_pu_results')
                   ->whereColumn('polling_unit.uniqueid', 'announced_pu_results.polling_unit_uniqueid');
-
         })
         ->get();
 
@@ -36,7 +35,7 @@ class ResultController extends Controller
      */
     public function store(Request $request)
     {
-        $scores = $request->all();
+        $scores = $request->all(); // all the request inserted by the user
         //The party abbreviation labour cant be inserted
 
         for ($i=0; $i < count($request->partyname); $i++) {
@@ -45,10 +44,11 @@ class ResultController extends Controller
             'party_abbreviation' => $scores['partyname'][$i],
             'party_score' => $scores['score'][$i],
             'date_entered' => Carbon::now(), // Using the carbon helper
-
+            'user_ip_address'=> $request->ip(),
+            'entered_by_user'=>gethostbyaddr($_SERVER['REMOTE_ADDR']) // i used my computer name
           ]);
         }
-        redirect()->back()->with('success','Great');
+        return redirect()->back()->with('status','Inserted Successfully');
 
     }
 
@@ -64,27 +64,5 @@ class ResultController extends Controller
         return view('results.show',['id' => $id, 'parties' => $parties]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
 
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
