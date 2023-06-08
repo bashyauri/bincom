@@ -15,7 +15,7 @@
                 <div class="col-lg-6">
                     <form action="{{route('lga.scores')}}" method="post">
                 @csrf
-            <select class="form-select"name = "lga" aria-label="Default select example">
+            <select class="form-select" name = "lga" aria-label="Default select example">
                 <option selected>Open this select menu</option>
                 @foreach ($lgas as $lga)
 

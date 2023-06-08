@@ -32,8 +32,7 @@
 
                             <th scope="col">Party Abbreviation</th>
                             <th scope="col">Party Score</th>
-                            {{-- <th scope="col">Polling Unit name</th>
-                            <th scope="col">Description</th> --}}
+
                           </tr>
                         </thead>
                         <tbody>

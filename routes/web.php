@@ -23,5 +23,5 @@ Route::resource('polls',PollingController::class);
 // This will create the CRUD functions index,show,store,update and destroy
 Route::resource('results',ResultController::class);
 // Select LGA Route
-Route::get('lga',[PollingController::class,'selectLGA'])->name('lga');
+Route::get('lga',[PollingController::class,'selectAllLgas'])->name('lga');
 Route::post('score',[PollingController::class,'lgaScores'])->name('lga.scores');

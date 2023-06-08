@@ -2,63 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\lgaScoresRequest;
+use App\Services\PollingService;
+use Exception;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
+
 
 class PollingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct(protected PollingService $pollingService){}
+    public function index() : View
     {
 
-        $all_polling_units = DB::table('polling_unit')->get();
-       return view('polls.index',['all_polling_units' => $all_polling_units]);
+            $all_polling_units = $this->pollingService->index();
+            return view('polls.index',['all_polling_units' => $all_polling_units]);
+
+
     }
 
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show($id) : View
     {
 
-        $polling_units_results = DB::table('announced_pu_results')
-        ->where('polling_unit_uniqueid', $id)->get();
-        return view('polls.show',['polling_units_results' => $polling_units_results]);
+            $polling_units_results = $this->pollingService->show($id);
+            return view('polls.show',['polling_units_results' => $polling_units_results]);
+
+
     }
 
-    public function selectLGA()
+    public function selectAllLgas(): View
     {
-    $lgas = DB::table('lga')->where('state_id', '=', 25)->get();
 
 
-     return view('polls/show-lga',['lgas' => $lgas]);
+            $lgas = $this->pollingService->selectAllLgas();
+            return view('polls/show-lga',['lgas' => $lgas]);
+
 
     }
-    public function lgaScores(Request $request)
+    public function lgaScores(lgaScoresRequest $request) : View
     {
-        $units = [];
-        // Get all the polling units in that LGA and insert the uniqueid in an array
-        $polling_units = DB::table('polling_unit')->where('lga_id','=',$request->lga)->get();
-        foreach ($polling_units as $unit){
-            array_push($units,$unit->uniqueid);
+        try {
+            $party_scores = $this->pollingService->lgaScores($request->validated());
+            return view('polls/show-scores',['party_scores'=>$party_scores]);
+        } catch (Exception $e) {
+            Log::alert($e->getMessage());
+            return redirect()->back()->withErrors(['msgError' => 'Something went wrong:']);
         }
-        // Add all the Scores of each party
-        $party_scores = DB::table('announced_pu_results')
-        ->select('party_abbreviation',DB::raw('sum(party_score) as scores '))
-        ->orWhereIn('polling_unit_uniqueid', $units)
 
-        ->groupBy('party_abbreviation')
-        ->get();
-        return view('polls/show-scores',['party_scores'=>$party_scores]);
+
 
     }
 
